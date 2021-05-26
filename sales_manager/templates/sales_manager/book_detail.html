@@ -3,12 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container">
     <h1>Book Detail Page</h1>
     {{ book.title }}<br>
     {{ book.text }}<br>
+    {{ book.count_likes }}<br>
     <i>{{ book.author }}</i><br>
     {{ book.date_publish|date:"d-m-Y" }}<br><br>
+    {% for comment in book.comments.all %}
+            <p>{{ comment.text }}</p>
+            <p>Date: {{ comment.date|date:"d-m-Y-H:i:s" }}</p>
+            <p>Author: {{ comment.user.username }}</p>
+            <p>Likes: {{ comment.count_likes }}</p>
+    {% endfor %}
+    <br><hr>
+
+    <form action="{% url 'add-comment' book_id=book.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="comment">Comment:</label>
+          <textarea class="form-control" rows="5" id="comment" name="text" required></textarea>
+        </div>
+        <input type="submit" class="btn btn-warning" value="OK">
+    </form>
+</div>
 </body>
 </html>

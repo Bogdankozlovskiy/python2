@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container">
 {{ user.username }}
 {% if user.is_authenticated %}
     <a href="{% url 'logout' %}">logout</a>
@@ -19,7 +21,15 @@
         {{ book.date_publish|date:"d-m-Y" }}<br>
         <a href="{% url 'book-like' book_id=book.id %}">
             <i>likes {{ book.count_likes }}</i>
-        </a><br><br>
+        </a><br>
+        {% for comment in book.comments.all %}
+            <p>{{ comment.text }}</p>
+            <p>Date: {{ comment.date|date:"d-m-Y-H:i:s" }}</p>
+            <p>Author: {{ comment.user.username }}</p>
+            <p>Likes: {{ comment.count_likes }}</p>
+        {% endfor %}
+        <br>
     {% endfor %}
+</div>
 </body>
 </html>

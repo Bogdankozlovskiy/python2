@@ -110,7 +110,7 @@ LANGUAGE_CODE = 'ru-ru'
 
 DATE_FORMAT = "Y-m-d"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 

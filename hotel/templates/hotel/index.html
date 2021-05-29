@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{% url 'search-room' %}" method="get">
+    <label for="start_date">start date</label><br>
+    <input type="date" name="start_date" id="start_date" required><br>
+    <label for="end_date">end date</label><br>
+    <input type="date" name="end_date" id="end_date" required><br>
+    <select name="kind">
+        {% for kind in kinds %}
+        <option>{{ kind.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="OK">
+</form>
+</body>
+</html>

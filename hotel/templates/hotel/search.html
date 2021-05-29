@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for room in rooms %}
+        <h3>{{ room.description }}</h3>
+        <i>{{ room.kind.name }}</i>
+    {% endfor %}
+</body>
+</html>

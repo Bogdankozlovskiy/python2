@@ -1,0 +1,18 @@
+<a href="{% url 'book-detail' book_id=book.id %}">
+    {{ book.title }}
+</a><br>
+{{ book.text }}<br>
+<i>{{ book.author.username }}</i><br>
+{{ book.date_publish|date:"d-m-Y" }}<br>
+<a href="{% url 'book-like' book_id=book.id %}">
+    <i>likes {{ book.count_likes }}</i>
+</a><br>
+{% if with_comment %}
+    {% for comment in book.comments.all %}
+        <p>{{ comment.text }}</p>
+        <p>Date: {{ comment.date|date:"d-m-Y-H:i:s" }}</p>
+        <p>Author: {{ comment.user.username }}</p>
+        <p>Likes: {{ comment.count_likes }}</p>
+    {% endfor %}
+{% endif %}
+<br>

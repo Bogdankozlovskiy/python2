@@ -3,7 +3,7 @@
 {% block title %}Book Detail{% endblock %}
 {% block content %}
 <div class="container">
-    {% include 'sales_manager/book_view.html' with book=book with_comment=True %}
+    {% include 'sales_manager/book_view.html' with book=book with_comment=True redirect_url='book-detail' %}
     <hr>
     <form action="{% url 'add-comment' book_id=book.id %}" method="post">
         {% csrf_token %}

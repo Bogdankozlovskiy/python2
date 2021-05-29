@@ -21,13 +21,16 @@ def book_detail(request, book_id):
 
 
 @login_required()
-def book_like(request, book_id):
+def book_like(request, book_id, redirect_url):
     book = Book.objects.get(id=book_id)
     if request.user in book.likes.all():
         book.likes.remove(request.user)
     else:
         book.likes.add(request.user)
-    return redirect("main-page")
+    if redirect_url == "main-page":
+        return redirect("main-page")
+    elif redirect_url == "book-detail":
+        return redirect("book-detail", book_id=book_id)
 
 
 class LoginView(View):

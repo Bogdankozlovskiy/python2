@@ -4,8 +4,8 @@
 {{ book.text }}<br>
 <i>{{ book.author.username }}</i><br>
 {{ book.date_publish|date:"d-m-Y" }}<br>
-<a href="{% url 'book-like' book_id=book.id %}">
-    <i>likes {{ book.count_likes }}</i>
+<a href="{% url 'book-like' book_id=book.id redirect_url=redirect_url %}">
+    <i>likes {{ book.rate_avg }}</i>
 </a><br>
 {% if with_comment %}
     {% for comment in book.comments.all %}

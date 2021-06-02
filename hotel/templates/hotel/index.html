@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sales_manager/main.html' %}
+{% block content %}
+<div class="container">
 <form action="{% url 'search-room' %}" method="get">
     <label for="start_date">start date</label><br>
     <input type="date" name="start_date" id="start_date" required><br>
@@ -17,5 +13,15 @@
     </select>
     <input type="submit" value="OK">
 </form>
-</body>
-</html>
+
+{% for type in types %}
+    <h1>{{ type.title }}</h1>
+    <h3>{{ type.avg_rate }}</h3>
+    {% for i in '12345' %}
+        <a href="{% url 'type-service-rate' type_id=type.id rate=i %}">
+            {{ i }}
+        </a>
+    {% endfor %}
+{% endfor %}
+{% endblock %}
+</div>

@@ -1,12 +1,14 @@
-from django.shortcuts import render
-from hotel.models import RoomKind, Room, BookedRoom
-from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from hotel.models import RoomKind, Room, BookedRoom, TypeService, UserTypeService
+from django.db.models import Q, Avg
 from datetime import datetime
 
 
 def filter_room(request):
     rk = RoomKind.objects.all()
-    return render(request, "hotel/index.html", {"kinds": rk})
+    ts = TypeService.objects.all()
+    return render(request, "hotel/index.html", {"kinds": rk, "types": ts})
 
 
 def search_room(request):
@@ -21,3 +23,16 @@ def search_room(request):
     )
     rooms = Room.objects.filter(~Q(booked__in=br) & Q(kind=kind))
     return render(request, "hotel/search.html", {"rooms": rooms})
+
+
+@login_required()
+def service_mark(request, type_id, rate):
+    UserTypeService.objects.update_or_create(
+        user_id=request.user.id,
+        type_service_id=type_id,
+        defaults={"rate": rate}
+    )
+    ts = TypeService.objects.get(id=type_id)
+    ts.avg_rate = ts.rated_type_service.aggregate(rate=Avg("rate"))['rate']
+    ts.save(update_fields=['avg_rate'])
+    return redirect("filter-room")

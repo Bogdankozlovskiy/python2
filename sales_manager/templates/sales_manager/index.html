@@ -8,6 +8,7 @@
     <h1>hello, this is main page</h1><hr>
     {% for book in books %}
         {% if book.img %}
+            <h2>Hello</h2>
             <img src="{{ book.img.url }}">
         {% endif %}
         {% include "sales_manager/book_view.html" with book=book with_comment=False redirect_url='main-page' %}

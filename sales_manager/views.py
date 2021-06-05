@@ -1,10 +1,19 @@
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Avg
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, CharField
+from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from sales_manager.models import Book, Comment, UserRateBook
 from django.views import View
+
+from sales_manager.serializers import BookSerializer
 from sales_manager.utils import get_book_with_comment
 
 
@@ -67,3 +76,33 @@ def add_comment(request, book_id):
         book_id=book_id
     )
     return redirect("book-detail", book_id=book_id)
+
+
+@login_required()
+def comment_like(request, comment_id):
+    com = Comment.objects.get(id=comment_id)
+    if request.user in com.like.all():
+        com.like.remove(request.user)
+    else:
+        com.like.add(request.user)
+    return redirect("book-detail", book_id=com.book_id)
+
+
+def add_like_ajax(request):
+    comment_id = request.POST['comment_id']
+    query_com = Comment.objects.filter(id=comment_id)
+    if query_com.exists():
+        com = query_com.first()
+        if request.user in com.like.all():
+            com.like.remove(request.user)
+        else:
+            com.like.add(request.user)
+        return HttpResponse(com.like.count())
+    return HttpResponseNotFound("error")
+
+
+class BookListAPIView(ListAPIView):
+    queryset = Book.objects.all().select_related("author")
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]

@@ -1,6 +1,5 @@
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
-from rest_framework import pagination
 from django.db.models import Avg
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
@@ -11,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView
 from sales_manager.models import Book, Comment, UserRateBook
 from django.views import View
+from sales_manager.paginators import MyPagination
 from sales_manager.serializers import BookSerializer
 from sales_manager.utils import get_book_with_comment
 from rest_framework import filters
@@ -119,20 +119,17 @@ def add_like_ajax(request):
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class MyPagination(pagination.LimitOffsetPagination):
-    max_limit = 2
-
 
 class BookListAPIView(ListCreateAPIView):
     pagination_class = MyPagination
     permission_classes = [IsAuthenticated]
     authentication_classes = [BasicAuthentication, TokenAuthentication, SessionAuthentication]
-    queryset = Book.objects.all()
+    queryset = Book.objects
     serializer_class = BookSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
-    ordering_fields = ['id', 'title']
+    ordering_fields = ['id', 'title', "author__id"]
     ordering = ['-id']
-    search_fields = ('title', 'text')
+    search_fields = ('title', 'text', "author__username")
 
 
 class BookDetail(GenericAPIView):

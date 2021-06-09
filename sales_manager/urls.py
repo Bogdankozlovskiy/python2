@@ -11,5 +11,7 @@ urlpatterns = [
     path("add_comment/<int:book_id>/", views.add_comment, name="add-comment"),
     path("comment_like/<int:comment_id>/", views.comment_like, name="comment-like"),
     path("show_all_books/", views.BookListAPIView.as_view()),
+    path("show_all_books/<int:pk>/", views.BookDetail.as_view()),
+    path("update_book/<int:pk>/", views.BookUpdateAPI.as_view()),
     path("", views.main_page, name="main-page"),
 ]

@@ -1,20 +1,19 @@
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from rest_framework import pagination
 from django.db.models import Avg
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from rest_framework.serializers import ModelSerializer, SerializerMethodField, CharField
-from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView
 from sales_manager.models import Book, Comment, UserRateBook
 from django.views import View
-
 from sales_manager.serializers import BookSerializer
 from sales_manager.utils import get_book_with_comment
+from rest_framework import filters
 
 
 def main_page(request):
@@ -101,8 +100,57 @@ def add_like_ajax(request):
     return HttpResponseNotFound("error")
 
 
-class BookListAPIView(ListAPIView):
-    queryset = Book.objects.all().select_related("author")
-    serializer_class = BookSerializer
+# class BookListAPIView(ListAPIView):
+#     queryset = Book.objects.all().select_related("author")
+#     serializer_class = BookSerializer
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [BasicAuthentication, TokenAuthentication]
+
+# class BookListAPIView(APIView):
+#     def get(self, request):
+#         query_set = Book.objects.all()
+#         serializer = BookSerializer(query_set, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     def post(self, request):
+#         serializer = BookSerializer(data=request.data)
+#         if serializer.is_valid():
+#             book = serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MyPagination(pagination.LimitOffsetPagination):
+    max_limit = 2
+
+
+class BookListAPIView(ListCreateAPIView):
+    pagination_class = MyPagination
     permission_classes = [IsAuthenticated]
-    authentication_classes = [BasicAuthentication, TokenAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication, SessionAuthentication]
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    ordering_fields = ['id', 'title']
+    ordering = ['-id']
+    search_fields = ('title', 'text')
+
+
+class BookDetail(GenericAPIView):
+    queryset = Book.objects
+    serializer_class = BookSerializer
+
+    def get(self, request, pk):
+        serializer = self.serializer_class(self.get_object())
+        return Response(serializer.data)
+
+# CRUD
+# GET, Options
+# Put Putch Delete Post
+
+
+class BookUpdateAPI(RetrieveUpdateDestroyAPIView):
+    '''hello'''
+    queryset = Book.objects
+    serializer_class = BookSerializer
+
+

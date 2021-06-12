@@ -7,13 +7,13 @@ from django.views.decorators.http import require_http_methods
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.views import APIView
 
 from sales_manager.models import Book, Comment, UserRateBook
 from django.views import View
 from sales_manager.paginators import MyPagination
-from sales_manager.serializers import BookSerializer, RateBookSerializer
+from sales_manager.serializers import BookSerializer, RateBookSerializer, CreateBookSerializer
 from sales_manager.utils import get_book_with_comment
 from rest_framework import filters, status
 
@@ -126,6 +126,11 @@ class BookDetail(GenericAPIView):
 class BookUpdateAPI(RetrieveUpdateDestroyAPIView):
     queryset = Book.objects
     serializer_class = BookSerializer
+
+
+class BookCreate(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CreateBookSerializer
 
 
 class AddRateBookAPI(APIView):

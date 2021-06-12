@@ -1,3 +1,6 @@
+{% load static %}
+<script src="{% static 'script.js' %}"></script>
+
 <a href="{% url 'book-detail' book_id=book.id %}">
     {{ book.title }}
 </a><br>
@@ -16,7 +19,9 @@
         <p>{{ comment.text }}</p>
         <p>Date: {{ comment.date|date:"d-m-Y-H:i:s" }}</p>
         <p>Author: {{ comment.user.username }}</p>
-        <p>Likes: {{ comment.count_likes }}</p>
+            <p class="comment-like" id="comment_like_{{ comment.id }}">
+                Likes: {{ comment.count_likes }}
+            </p>
     {% endfor %}
 {% endif %}
 <br>

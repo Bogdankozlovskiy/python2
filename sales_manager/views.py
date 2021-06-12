@@ -149,6 +149,6 @@ class AddRateBookAPI(APIView):
         )
         book.avg_rate = book.rated_user.aggregate(rate=Avg("rate"))['rate']
         book.save(update_fields=["avg_rate"])
-        return Response({"avg_rate": book.avg_rate}, status=status.HTTP_201_CREATED)
+        return Response({"avg_rate": book.avg_rate}, status=status.HTTP_200_OK)
 
 

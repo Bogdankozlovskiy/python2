@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from rest_framework.views import APIView
+
 from sales_manager.shortcut import upload_to
 
 
@@ -68,3 +70,4 @@ class Comment(models.Model):
     )
     like = models.ManyToManyField(User, related_name="liked_comments", blank=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="comments")
+

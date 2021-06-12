@@ -13,5 +13,6 @@ urlpatterns = [
     path("show_all_books/", views.BookListAPIView.as_view()),
     path("show_all_books/<int:pk>/", views.BookDetail.as_view()),
     path("update_book/<int:pk>/", views.BookUpdateAPI.as_view()),
+    path("add_rate_book_api/", views.AddRateBookAPI.as_view()),
     path("", views.main_page, name="main-page"),
 ]

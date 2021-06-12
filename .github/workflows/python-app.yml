@@ -26,4 +26,4 @@ jobs:
         pip install -r requirements.txt
     - name: Test with unitTest
       run: |
-        python3 manage.py test
+        python3 manage.py runserver

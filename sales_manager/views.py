@@ -89,17 +89,33 @@ def comment_like(request, comment_id):
     return redirect("book-detail", book_id=com.book_id)
 
 
-def add_like_ajax(request):
-    comment_id = request.POST['comment_id']
-    query_com = Comment.objects.filter(id=comment_id)
-    if query_com.exists():
-        com = query_com.first()
-        if request.user in com.like.all():
-            com.like.remove(request.user)
-        else:
-            com.like.add(request.user)
-        return HttpResponse(com.like.count())
-    return HttpResponseNotFound("error")
+# def add_like_ajax(request):
+#     comment_id = request.GET['comment_id']
+#     query_com = Comment.objects.filter(id=comment_id)
+#     if query_com.exists():
+#         com = query_com.first()
+#         if request.user in com.like.all():
+#             com.like.remove(request.user)
+#         else:
+#             com.like.add(request.user)
+#         return HttpResponse(com.like.count())
+#     return HttpResponseNotFound("error")
+
+class AddLikeCommentAPIView(APIView):
+    def put(self, request):
+        comment_id = request.data['comment_id']
+        query_com = Comment.objects.filter(id=comment_id)
+        if query_com.exists():
+            com = query_com.first()
+            if request.user in com.like.all():
+                com.like.remove(request.user)
+            else:
+                com.like.add(request.user)
+            return Response(com.like.count())
+        return Response("error", status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        return Response({})
 
 
 class BookListAPIView(ListCreateAPIView):

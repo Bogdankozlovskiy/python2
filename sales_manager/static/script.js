@@ -26,10 +26,10 @@ $("document").ready(
             $.ajax({
                 "url":"/shop/add-ajax-like/",
                 "data":{
-                    "comment_id": comment_id.split("_")[2],
-                    "csrfmiddlewaretoken": csrftoken
+                    "comment_id": comment_id.split("_")[2]
                 },
-                "method": "post",
+                "headers": { 'X-CSRFToken': csrftoken },
+                "method": "put",
                 success: function (data) {
                     $(`#${comment_id}`).html(`Likes: ${data}`)
                 },
